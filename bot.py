@@ -21,7 +21,7 @@ def main():
 
 
     @bot.message_handler(content_types=["photo"])
-    def save_photos(message):
+    def handle_photos(message):
         filenames = []
         for ph in message.photo:
             path = json.loads(requests.get(f'https://api.telegram.org/bot{token}/getFile?file_id={ph.file_id}').text)["result"]["file_path"]
@@ -31,10 +31,8 @@ def main():
             open(filename, "wb").write(response.content)
             filenames.append(filename)
 
-
-    # def send_photo(path):
-    #     photo = open(path, 'rb')
-    #     bot.send_photo(chat_id, photo)
-
+        for filename in filenames:
+            new_filename = filename  # тут можно создать новый файл и указать его имя
+            bot.send_photo(message.chat.id, photo=open(new_filename, "rb"))
 
     bot.infinity_polling()
