@@ -1,3 +1,3 @@
-from kukuruzer import distort_image
+import bot
 
-distort_image('pavlov.png')
+bot.main()
