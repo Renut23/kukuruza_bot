@@ -3,6 +3,7 @@ import telebot
 import os
 import requests
 import json
+from kukuruzer import distort_image
 
 
 def main():
@@ -32,7 +33,12 @@ def main():
             filenames.append(filename)
 
         for filename in filenames:
-            new_filename = filename  # тут можно создать новый файл и указать его имя
-            bot.send_photo(message.chat.id, photo=open(new_filename, "rb"))
+            new_file_paths = distort_image(filename)
+
+            for new_filename in new_file_paths:
+                bot.send_photo(message.chat.id, photo=open(new_filename, "rb"))
+                os.remove(new_filename)
+
+            os.remove(filename)
 
     bot.infinity_polling()

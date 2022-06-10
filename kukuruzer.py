@@ -43,7 +43,14 @@ def seam_carving(img: np.ndarray, horizontal_seams: int = 100, vertical_seams: i
 def distort_image(path_to_image: str):
     img = cv.imread(path_to_image)
     faces = detect_faces(img, 50)
-    for face in faces:
-        distorted_face = seam_carving(face, 120, 120)
-        cv.imshow('Face', distorted_face)
-        cv.waitKey(0)
+
+    file_paths = []
+    for i in range(len(faces)):
+        distorted_face = seam_carving(faces[i], 120, 120)
+        filetype = path_to_image.split('.')[-1]
+        filename = path_to_image[:-len(filetype)-1]
+
+        new_file_path = f'{filename}_{i}.{filetype}'
+        cv.imwrite(new_file_path, distorted_face)
+        file_paths.append(new_file_path)
+    return file_paths
