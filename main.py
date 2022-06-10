@@ -1,3 +1,5 @@
-from kukuruzer import distort_image
+import bot
 
-distort_image('pavlov.png')
+
+if __name__ == "__main__":
+    bot.main()
