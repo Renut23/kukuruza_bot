@@ -22,7 +22,14 @@ def detect_faces(img: np.ndarray, bounding_box_addition: int):
     return face_crops
 
 
+def resize_image(img: np.ndarray, scale=0.6):
+    new_h = round(img.shape[0] * scale)
+    new_w = round(img.shape[1] * scale)
+    return cv.resize(img, (new_h, new_w), interpolation=cv.INTER_AREA)
+
+
 def seam_carving(img: np.ndarray, horizontal_seams: int = 100, vertical_seams: int = 100):
+    # img = resize_image(img, 0.5)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     sobel = filters.sobel(gray.astype("float"))
     carved = transform.seam_carve(img, sobel, 'vertical', vertical_seams)
@@ -37,6 +44,6 @@ def distort_image(path_to_image: str):
     img = cv.imread(path_to_image)
     faces = detect_faces(img, 50)
     for face in faces:
-        distorted_face = seam_carving(face)
+        distorted_face = seam_carving(face, 120, 120)
         cv.imshow('Face', distorted_face)
         cv.waitKey(0)
