@@ -3,13 +3,20 @@ import telebot
 import os
 import requests
 import json
-from kukuruzer import distort_image
+from settings import *
+from kukuruzer import (
+    CascadeClassifierFaceDetector,
+    SkimageSeamCarvingDistortionProcessor,
+    DistortionContext
+)
 
 
 def main():
     token = os.environ["KUKURUZER_BOT_TOKEN"]
     bot = telebot.TeleBot(token)
-
+    face_detector = CascadeClassifierFaceDetector(CASCADE_CLASSIFIER_PATH)
+    face_kukuruzer = SkimageSeamCarvingDistortionProcessor()
+    distortion_context = DistortionContext(face_detector, face_kukuruzer)
 
     @bot.message_handler(commands=['start', 'help'])
     def send_welcome(message):
@@ -33,7 +40,7 @@ def main():
             filenames.append(filename)
 
         for filename in filenames:
-            new_file_paths = distort_image(filename)
+            new_file_paths = distortion_context.distort_image(filename)
 
             for new_filename in new_file_paths:
                 bot.send_photo(message.chat.id, photo=open(new_filename, "rb"))
